@@ -109,11 +109,6 @@
         pointer-events: none;
     }
 
-    body.video-focus {
-        overflow: hidden;
-        height: 100%;
-    }
-
     /* Video block — full screen while playing */
     .video-hero {
         position: relative;
@@ -1365,16 +1360,11 @@
             }
         }
 
-        function unlockVideoFocus() {
-            document.body.classList.remove('video-focus');
-        }
-
         function startInvitation() {
             if (hasStarted) return;
             hasStarted = true;
             appSplash.classList.add('is-hidden');
             videoHero.classList.add('is-playing');
-            document.body.classList.add('video-focus');
             window.scrollTo(0, 0);
             showScrollHint();
 
@@ -1400,10 +1390,7 @@
         }, { passive: false });
 
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 40) {
-                hideScrollHint();
-                unlockVideoFocus();
-            }
+            if (window.scrollY > 40) hideScrollHint();
         }, { passive: true });
 
         video.addEventListener('timeupdate', () => {
@@ -1411,14 +1398,10 @@
             if (video.currentTime >= 2.5 || nearEnd) {
                 revealInvitation();
             }
-            if (nearEnd) {
-                unlockVideoFocus();
-            }
         });
 
         video.addEventListener('ended', () => {
             revealInvitation();
-            unlockVideoFocus();
         });
 
         const mapClickArea = document.getElementById('mapClickArea');
