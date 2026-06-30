@@ -168,9 +168,12 @@
 
     .splash-names {
         display: block;
-        margin-top: 4px;
-        font-size: clamp(18px, 4.8vw, 24px);
+        margin-top: 6px;
+        font-size: clamp(22px, 5.5vw, 30px);
+        font-family: 'UniSalar_F_097', 'Amiri', serif;
         color: var(--name-deep-blue);
+        letter-spacing: 0.03em;
+        text-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
     }
 
     .splash-hint {
@@ -208,11 +211,11 @@
 
     #invitationText {
         position: absolute;
-        top: 52%;
+        top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         width: 100%;
-        max-width: min(96vw, 620px);
+        max-width: min(92vw, 620px);
         text-align: center;
         z-index: 3;
         opacity: 0;
@@ -221,8 +224,11 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
+        gap: clamp(36px, 8vh, 72px);
         overflow: visible;
-        padding: 0 clamp(8px, 3vw, 16px) clamp(24px, 6vh, 48px);
+        padding: clamp(12px, 3vw, 20px) clamp(16px, 5vw, 28px);
+        box-sizing: border-box;
     }
 
     #invitationText.visible {
@@ -264,10 +270,11 @@
     }
 
     .intro-text {
-        color: rgba(15, 37, 55, 0.95);
-        font-size: clamp(30px, 5.5vw, 62px);
-        line-height: 1.6;
-        margin-bottom: clamp(14px, 2.5vw, 18px);
+        color: rgba(15, 37, 55, 0.92);
+        font-size: clamp(20px, 4.2vw, 34px);
+        line-height: 1.75;
+        max-width: min(88vw, 480px);
+        margin: 0;
         text-shadow: 2px 2px 15px rgba(255, 255, 255, 0.6);
     }
 
@@ -277,39 +284,65 @@
         align-items: center;
         position: relative;
         width: 100%;
+        max-width: 100%;
         overflow: visible;
+        gap: clamp(8px, 2vh, 18px);
+        padding: 0 clamp(8px, 3vw, 16px);
+        box-sizing: border-box;
+    }
+
+    .name-top,
+    .name-bottom,
+    .and-middle {
+        font-family: 'UniSalar_F_097', 'Amiri', serif;
+        line-height: 0.95;
+        white-space: nowrap;
+        letter-spacing: 0.025em;
+        width: fit-content;
+        max-width: 100%;
+        text-align: center;
     }
 
     .name-top {
         color: var(--name-deep-blue);
-        font-size: clamp(56px, 16vw, 140px);
-        transform: translateX(clamp(10px, 4vw, 40px));
-        margin-bottom: clamp(-14px, -3vw, -30px);
+        font-size: clamp(64px, 18vw, 195px);
+        transform: translateX(clamp(6px, 2.5vw, 28px));
+        margin: 0;
         z-index: 3;
         position: relative;
-        text-shadow: 2px 2px 15px rgba(255, 255, 255, 0.5);
-        line-height: 1;
+        text-shadow:
+            0 2px 0 rgba(255, 255, 255, 0.95),
+            0 0 32px rgba(191, 224, 242, 0.55),
+            0 6px 22px rgba(27, 82, 130, 0.28),
+            3px 5px 16px rgba(255, 255, 255, 0.65);
     }
 
     .and-middle {
-        color: var(--name-soft-blue);
-        font-size: clamp(48px, 13vw, 120px);
-        transform: translateX(clamp(-4px, -1.5vw, -12px));
-        margin-bottom: clamp(-18px, -4vw, -36px);
+        color: var(--primary-baby-blue);
+        font-size: clamp(36px, 10vw, 88px);
+        transform: translateX(clamp(-4px, -1vw, -10px));
+        margin: clamp(4px, 1.2vh, 12px) 0;
         z-index: 2;
         position: relative;
-        text-shadow: 2px 2px 15px rgba(255, 255, 255, 0.5);
-        line-height: 1;
+        text-shadow:
+            0 2px 0 rgba(255, 255, 255, 0.9),
+            0 0 28px rgba(74, 144, 226, 0.45),
+            0 5px 18px rgba(27, 82, 130, 0.22),
+            2px 4px 14px rgba(255, 255, 255, 0.6);
     }
 
     .name-bottom {
         color: var(--name-deep-blue);
-        font-size: clamp(56px, 16vw, 140px);
-        transform: translateX(clamp(-18px, -6vw, -55px));
+        font-size: clamp(64px, 18vw, 195px);
+        transform: translateX(clamp(-10px, -3.5vw, -36px));
+        margin: 0;
         z-index: 1;
         position: relative;
-        text-shadow: 2px 2px 15px rgba(255, 255, 255, 0.5);
-        line-height: 1;
+        text-shadow:
+            0 2px 0 rgba(255, 255, 255, 0.95),
+            0 0 32px rgba(191, 224, 242, 0.55),
+            0 6px 22px rgba(27, 82, 130, 0.28),
+            3px 5px 16px rgba(255, 255, 255, 0.65);
     }
 
     /* 7. STRUCTURE STYLES */
@@ -811,6 +844,74 @@
         50% { opacity: 0; }
     }
 
+    .footer-social {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(12px, 3vw, 16px);
+        margin-top: clamp(4px, 1vw, 8px);
+    }
+
+    .footer-social-label {
+        margin: 0;
+        font-family: 'UniSalar_F_097', Tahoma, Arial, sans-serif;
+        font-size: clamp(0.9rem, 3.2vw, 1.05rem);
+        color: rgba(191, 224, 242, 0.75);
+        letter-spacing: 0.02em;
+    }
+
+    .footer-social-links {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(14px, 4vw, 22px);
+        direction: ltr;
+    }
+
+    .footer-social-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: clamp(46px, 12vw, 54px);
+        height: clamp(46px, 12vw, 54px);
+        border-radius: 50%;
+        color: #fff;
+        font-size: clamp(1.15rem, 4.5vw, 1.35rem);
+        text-decoration: none;
+        border: 1px solid rgba(191, 224, 242, 0.2);
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(74, 144, 226, 0.12));
+        box-shadow:
+            0 8px 24px rgba(0, 0, 0, 0.28),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .footer-social-link:hover,
+    .footer-social-link:focus-visible {
+        transform: translateY(-3px) scale(1.06);
+        border-color: rgba(191, 224, 242, 0.45);
+        box-shadow:
+            0 12px 28px rgba(0, 0, 0, 0.35),
+            0 0 20px rgba(74, 144, 226, 0.35);
+        outline: none;
+    }
+
+    .footer-social-instagram:hover,
+    .footer-social-instagram:focus-visible {
+        background: linear-gradient(145deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    }
+
+    .footer-social-tiktok:hover,
+    .footer-social-tiktok:focus-visible {
+        background: linear-gradient(145deg, #25f4ee, #fe2c55);
+    }
+
+    .footer-social-facebook:hover,
+    .footer-social-facebook:focus-visible {
+        background: linear-gradient(145deg, #1877f2, #0d65d9);
+    }
+
     .section:last-of-type {
         padding-bottom: max(clamp(40px, 8vw, 80px), calc(env(safe-area-inset-bottom) + 24px));
     }
@@ -822,21 +923,36 @@
         }
 
         .intro-text {
-            font-size: clamp(22px, 5vw, 30px);
+            font-size: clamp(17px, 4vw, 24px);
         }
 
         .name-top,
         .name-bottom {
-            font-size: clamp(44px, 13vw, 64px);
+            font-size: clamp(48px, 14vw, 72px);
+        }
+
+        .name-top {
+            transform: translateX(clamp(4px, 1.5vw, 14px));
+        }
+
+        .name-bottom {
+            transform: translateX(clamp(-6px, -2vw, -18px));
         }
 
         .and-middle {
-            font-size: clamp(38px, 11vw, 56px);
+            font-size: clamp(28px, 8vw, 48px);
+            margin: clamp(2px, 1vh, 8px) 0;
+            transform: translateX(-2px);
+        }
+
+        .couple-names-vertical {
+            gap: clamp(6px, 1.5vh, 12px);
+            padding: 0 clamp(12px, 4vw, 20px);
         }
 
         #invitationText {
-            top: 50%;
-            padding-bottom: clamp(32px, 8vh, 56px);
+            gap: clamp(28px, 6vh, 48px);
+            max-width: min(94vw, 620px);
         }
 
         .date-box {
@@ -880,36 +996,40 @@
 
     @media (max-height: 720px) {
         #invitationText {
-            top: 48%;
+            gap: clamp(20px, 5vh, 36px);
         }
 
         .intro-text {
-            font-size: clamp(18px, 4vw, 26px);
-            margin-bottom: 10px;
+            font-size: clamp(16px, 3.6vw, 22px);
+            line-height: 1.65;
         }
 
         .name-top,
         .name-bottom {
-            font-size: clamp(40px, 12vw, 58px);
+            font-size: clamp(42px, 13vw, 64px);
         }
 
         .and-middle {
-            font-size: clamp(34px, 10vw, 50px);
+            font-size: clamp(24px, 7vw, 40px);
+            margin: clamp(2px, 0.8vh, 6px) 0;
+        }
+
+        .couple-names-vertical {
+            gap: clamp(4px, 1vh, 10px);
         }
     }
 
     @media (max-width: 360px) {
         .name-top {
-            transform: translateX(6px);
-            margin-bottom: -10px;
+            transform: translateX(3px);
         }
 
         .name-bottom {
-            transform: translateX(-10px);
+            transform: translateX(-5px);
         }
 
         .and-middle {
-            margin-bottom: -14px;
+            transform: translateX(0);
         }
 
         .date-numbers {
@@ -1135,6 +1255,20 @@
                     <span class="footer-credit-text" id="typewriterKurdish"></span><span class="type-cursor" aria-hidden="true">|</span>
                     <span class="footer-brand-name">SmartServe</span>
                 </p>
+            </div>
+            <div class="footer-social">
+                <p class="footer-social-label">تابەکەمان لە تۆڕەکانی کۆمەڵایەتی</p>
+                <div class="footer-social-links">
+                    <a href="https://www.instagram.com/smartserve_krd?igsh=MWcwNW50emg3dTNmcg%3D%3D&utm_source=qr" class="footer-social-link footer-social-instagram" target="_blank" rel="noopener noreferrer" aria-label="Instagram — SmartServe">
+                        <i class="fab fa-instagram" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@smartserve1?_r=1&_t=ZS-97d3xWZTma7" class="footer-social-link footer-social-tiktok" target="_blank" rel="noopener noreferrer" aria-label="TikTok — SmartServe">
+                        <i class="fab fa-tiktok" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://www.facebook.com/share/1CANRvgXNM/?mibextid=wwXIfr" class="footer-social-link footer-social-facebook" target="_blank" rel="noopener noreferrer" aria-label="Facebook — SmartServe">
+                        <i class="fab fa-facebook-f" aria-hidden="true"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </footer>
