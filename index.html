@@ -67,8 +67,13 @@
     body {
         overflow-x: hidden;
         overflow-y: auto;
+        touch-action: pan-y;
         -webkit-overflow-scrolling: touch;
         overscroll-behavior-y: auto;
+    }
+
+    main.page-content {
+        touch-action: pan-y;
     }
 
     @media (max-width: 768px) {
@@ -107,6 +112,14 @@
         min-height: min(85dvh, 520px);
         background-color: #eceff1;
         overflow: hidden;
+        touch-action: pan-y;
+    }
+
+    @media (max-width: 768px) {
+        .video-hero {
+            height: min(72dvh, 680px);
+            min-height: min(60dvh, 420px);
+        }
     }
 
     .splash-card {
@@ -481,7 +494,11 @@
         background-color: #e8f2f8;
         margin: 0 auto;
         cursor: pointer;
-        touch-action: pan-y;
+        touch-action: manipulation;
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        -webkit-tap-highlight-color: transparent;
     }
 
     .map-container iframe {
@@ -1043,8 +1060,9 @@
         width: 100vw;
         height: 100vh;
         height: 100dvh;
-        pointer-events: none; 
-        z-index: 9999; 
+        pointer-events: none;
+        touch-action: none;
+        z-index: 5;
         overflow: hidden;
     }
 
@@ -1162,7 +1180,9 @@
             <p class="location-text">باخچە</p>
         </div>
         
-        <div class="map-container" id="mapClickArea" role="button" tabindex="0" aria-label="کردنەوەی ڕێگا لە گۆگڵ مەپس">
+        <a href="https://www.google.com/maps/dir/?api=1&destination=36.333611,44.030529&travelmode=driving"
+            class="map-container" id="mapClickArea" target="_blank" rel="noopener noreferrer"
+            aria-label="کردنەوەی ڕێگا لە گۆگڵ مەپس">
             <iframe 
                 src="https://maps.google.com/maps?q=36.333611,44.030529&t=&z=16&hl=ku&output=embed"
                 allowfullscreen="" 
@@ -1176,7 +1196,7 @@
                     کلیک بکە — ڕێگا لە گۆگڵ مەپس
                 </span>
             </div>
-        </div>
+        </a>
         <p class="map-hint">کلیک لەسەر نەخشەکە بکە بۆ کردنەوەی گۆگڵ مەپس و بینینی ڕێگاکەت بە شەقام.</p>
     </div>
 
@@ -1353,6 +1373,16 @@
 
         appSplash.addEventListener('click', startInvitation);
 
+        let splashTouchMoved = false;
+        appSplash.addEventListener('touchstart', () => { splashTouchMoved = false; }, { passive: true });
+        appSplash.addEventListener('touchmove', () => { splashTouchMoved = true; }, { passive: true });
+        appSplash.addEventListener('touchend', (e) => {
+            if (!splashTouchMoved && !hasStarted) {
+                e.preventDefault();
+                startInvitation();
+            }
+        }, { passive: false });
+
         window.addEventListener('scroll', () => {
             if (window.scrollY > 40) hideScrollHint();
         }, { passive: true });
@@ -1369,38 +1399,24 @@
         });
 
         const mapClickArea = document.getElementById('mapClickArea');
-        const mapDestination = '36.333611,44.030529';
+        const mapUrl = 'https://www.google.com/maps/dir/?api=1&destination=36.333611,44.030529&travelmode=driving';
+        let mapOpening = false;
 
-        function openGoogleMapsDirections(origin) {
-            let url = `https://www.google.com/maps/dir/?api=1&destination=${mapDestination}&travelmode=driving`;
-            if (origin) {
-                url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${mapDestination}&travelmode=driving`;
-            }
-            window.open(url, '_blank', 'noopener,noreferrer');
-        }
+        function openGoogleMapsNow(e) {
+            if (e) e.preventDefault();
+            if (mapOpening) return;
+            mapOpening = true;
+            setTimeout(() => { mapOpening = false; }, 500);
 
-        function handleMapOpen() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (pos) => {
-                        openGoogleMapsDirections(`${pos.coords.latitude},${pos.coords.longitude}`);
-                    },
-                    () => openGoogleMapsDirections(),
-                    { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
-                );
-            } else {
-                openGoogleMapsDirections();
+            const opened = window.open(mapUrl, '_blank', 'noopener,noreferrer');
+            if (!opened) {
+                window.location.href = mapUrl;
             }
         }
 
         if (mapClickArea) {
-            mapClickArea.addEventListener('click', handleMapOpen);
-            mapClickArea.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleMapOpen();
-                }
-            });
+            mapClickArea.addEventListener('click', openGoogleMapsNow);
+            mapClickArea.addEventListener('touchend', openGoogleMapsNow, { passive: false });
         }
 
         const typewriterEl = document.getElementById('typewriterKurdish');
