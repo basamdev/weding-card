@@ -54,6 +54,8 @@
     html {
         scroll-behavior: smooth;
         overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     body, html {
@@ -207,7 +209,7 @@
         z-index: 1;
         background-color: var(--bg-ice);
         pointer-events: none;
-        touch-action: none;
+        touch-action: pan-y;
         -webkit-user-select: none;
         user-select: none;
         opacity: 0;
@@ -1144,7 +1146,7 @@
     <div class="section">
         <div class="date-box">
             <div class="date-content">
-                <h3 class="date-day">ڕۆژی پێجشەممە</h3>
+                <h3 class="date-day">ڕۆژی دووشەممە</h3>
                 
                 <div class="date-divider">
                     <i class="fas fa-heart"></i>
@@ -1152,7 +1154,7 @@
                 
                 <div class="date-numbers">
                     <div class="date-item">
-                        <span class="date-value">٧</span>
+                        <span class="date-value">٦</span>
                         <span class="date-label">ڕۆژ</span>
                     </div>
                     <div class="date-slash">/</div>
@@ -1169,7 +1171,7 @@
                 
                 <div class="time-container">
                     <i class="far fa-clock"></i>
-                    <p class="time-text">کاتژمێر ٨:٣٠ ی شەو</p>
+                    <p class="time-text">کاتژمێر ٨:٠٠ ی ئێوارە</p>
                 </div>
             </div>
         </div>
@@ -1185,11 +1187,11 @@
             <p class="location-text">باخچە</p>
         </div>
         
-        <a href="https://www.google.com/maps/dir/?api=1&destination=36.333611,44.030529&travelmode=driving"
+        <a href="https://maps.app.goo.gl/LEuTKxhvxgikiwqD6?g_st=ic"
             class="map-container" id="mapClickArea" target="_blank" rel="noopener noreferrer"
             aria-label="کردنەوەی ڕێگا لە گۆگڵ مەپس">
             <iframe 
-                src="https://maps.google.com/maps?q=36.333611,44.030529&t=&z=16&hl=ku&output=embed"
+                src="https://maps.google.com/maps?q=36.276039,44.011734&t=&z=16&hl=ku&output=embed"
                 allowfullscreen="" 
                 loading="lazy" 
                 referrerpolicy="no-referrer-when-downgrade"
@@ -1360,12 +1362,18 @@
             }
         }
 
+        function enablePageScroll() {
+            document.documentElement.style.overflowY = 'auto';
+            document.body.style.overflowY = 'auto';
+            document.body.style.touchAction = 'pan-y';
+        }
+
         function startInvitation() {
             if (hasStarted) return;
             hasStarted = true;
             appSplash.classList.add('is-hidden');
             videoHero.classList.add('is-playing');
-            window.scrollTo(0, 0);
+            enablePageScroll();
             showScrollHint();
 
             if (bgMusic.paused) {
@@ -1378,16 +1386,9 @@
         }
 
         appSplash.addEventListener('click', startInvitation);
-
-        let splashTouchMoved = false;
-        appSplash.addEventListener('touchstart', () => { splashTouchMoved = false; }, { passive: true });
-        appSplash.addEventListener('touchmove', () => { splashTouchMoved = true; }, { passive: true });
-        appSplash.addEventListener('touchend', (e) => {
-            if (!splashTouchMoved && !hasStarted) {
-                e.preventDefault();
-                startInvitation();
-            }
-        }, { passive: false });
+        appSplash.addEventListener('pointerup', () => {
+            if (!hasStarted) startInvitation();
+        }, { passive: true });
 
         window.addEventListener('scroll', () => {
             if (window.scrollY > 40) hideScrollHint();
@@ -1403,27 +1404,6 @@
         video.addEventListener('ended', () => {
             revealInvitation();
         });
-
-        const mapClickArea = document.getElementById('mapClickArea');
-        const mapUrl = 'https://www.google.com/maps/dir/?api=1&destination=36.333611,44.030529&travelmode=driving';
-        let mapOpening = false;
-
-        function openGoogleMapsNow(e) {
-            if (e) e.preventDefault();
-            if (mapOpening) return;
-            mapOpening = true;
-            setTimeout(() => { mapOpening = false; }, 500);
-
-            const opened = window.open(mapUrl, '_blank', 'noopener,noreferrer');
-            if (!opened) {
-                window.location.href = mapUrl;
-            }
-        }
-
-        if (mapClickArea) {
-            mapClickArea.addEventListener('click', openGoogleMapsNow);
-            mapClickArea.addEventListener('touchend', openGoogleMapsNow, { passive: false });
-        }
 
         const typewriterEl = document.getElementById('typewriterKurdish');
         const footerSection = document.getElementById('smartServeFooter');
