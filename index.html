@@ -5,14 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta property="og:title" content="بانگهێشتنامەی ئیهاب و هەرڤین">
 <meta property="og:description" content="بەخۆشی و دڵ پڕ لە خۆشەویستی بانگهێشتتان دەکەین بۆ ئاهەنگەکەمان">
-<meta property="og:image" content="envelope-cover.png">
+<meta property="og:url" content="https://weding-card-ehab-harvin.vercel.app/">
+<meta property="og:image" content="https://weding-card-ehab-harvin.vercel.app/envelope-cover.png?v=3">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ku_IQ">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="بانگهێشتنامەی ئیهاب و هەرڤین">
 <meta name="twitter:description" content="بەخۆشی و دڵ پڕ لە خۆشەویستی بانگهێشتتان دەکەین بۆ ئاهەنگەکەمان">
-<meta name="twitter:image" content="envelope-cover.png">
+<meta name="twitter:image" content="https://weding-card-ehab-harvin.vercel.app/envelope-cover.png?v=3">
 <link rel="icon" href="icc.png" type="image/png">
 <link rel="apple-touch-icon" href="envelope-cover.png">
 
@@ -104,22 +108,31 @@
         pointer-events: none;
     }
 
-    /* Video block — in page flow, scrollable page below */
+    body.video-focus {
+        overflow: hidden;
+        height: 100%;
+    }
+
+    /* Video block — full screen while playing */
     .video-hero {
         position: relative;
         width: 100%;
-        height: min(100dvh, 900px);
-        min-height: min(85dvh, 520px);
+        height: 100dvh;
+        height: 100svh;
+        min-height: 100dvh;
+        min-height: 100svh;
         background-color: #eceff1;
         overflow: hidden;
         touch-action: pan-y;
     }
 
-    @media (max-width: 768px) {
-        .video-hero {
-            height: min(72dvh, 680px);
-            min-height: min(60dvh, 420px);
-        }
+    .video-hero.is-playing {
+        height: 100dvh;
+        height: 100svh;
+        min-height: 100dvh;
+        min-height: 100svh;
+        max-height: 100dvh;
+        max-height: 100svh;
     }
 
     .splash-card {
@@ -146,7 +159,7 @@
     .splash-logo-wrap {
         width: 100%;
         aspect-ratio: 1024 / 771;
-        background: #f5e8ec;
+        background: #e4eaef;
         overflow: hidden;
     }
 
@@ -1355,11 +1368,17 @@
             }
         }
 
+        function unlockVideoFocus() {
+            document.body.classList.remove('video-focus');
+        }
+
         function startInvitation() {
             if (hasStarted) return;
             hasStarted = true;
             appSplash.classList.add('is-hidden');
             videoHero.classList.add('is-playing');
+            document.body.classList.add('video-focus');
+            window.scrollTo(0, 0);
             showScrollHint();
 
             if (bgMusic.paused) {
@@ -1384,7 +1403,10 @@
         }, { passive: false });
 
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 40) hideScrollHint();
+            if (window.scrollY > 40) {
+                hideScrollHint();
+                unlockVideoFocus();
+            }
         }, { passive: true });
 
         video.addEventListener('timeupdate', () => {
@@ -1392,10 +1414,14 @@
             if (video.currentTime >= 2.5 || nearEnd) {
                 revealInvitation();
             }
+            if (nearEnd) {
+                unlockVideoFocus();
+            }
         });
 
         video.addEventListener('ended', () => {
             revealInvitation();
+            unlockVideoFocus();
         });
 
         const mapClickArea = document.getElementById('mapClickArea');
