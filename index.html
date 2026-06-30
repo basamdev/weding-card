@@ -49,7 +49,6 @@
     html {
         scroll-behavior: smooth;
         overflow-x: hidden;
-        height: 100%;
     }
 
     body, html {
@@ -57,6 +56,7 @@
         padding: 0;
         width: 100%;
         max-width: 100vw;
+        min-height: 100%;
         background-color: var(--bg-ice);
         font-family: 'UniSalar_F_097', Tahoma, Arial, sans-serif;
         -webkit-text-size-adjust: 100%;
@@ -65,23 +65,8 @@
     }
 
     body {
-        min-height: 100%;
         overflow-x: hidden;
-        overflow-y: hidden;
-        overscroll-behavior-y: none;
-    }
-
-    html.scroll-unlocked {
-        overflow: hidden;
-        height: 100%;
-    }
-
-    body.scroll-unlocked {
         overflow-y: auto;
-        overflow-x: hidden;
-        min-height: 100%;
-        height: auto;
-        touch-action: pan-y;
         -webkit-overflow-scrolling: touch;
         overscroll-behavior-y: auto;
     }
@@ -92,49 +77,36 @@
         }
     }
 
-    /* 4. HERO — splash logo → video */
-    #heroSection {
-        position: relative;
-        width: 100%;
-        height: 100vh;
-        height: 100svh;
-        height: 100dvh;
-        background-color: #eceff1;
-        cursor: pointer;
-        touch-action: pan-y;
-        -webkit-tap-highlight-color: transparent;
-        -webkit-touch-callout: none;
-        user-select: none;
-        overflow: hidden;
-    }
-
-    #heroSection.started {
-        height: 100vh;
-        height: 100svh;
-        height: 100dvh;
-        max-height: 100dvh;
-        overflow: hidden;
-        cursor: default;
-        touch-action: pan-y;
-    }
-
-    /* Pre-click splash — like WhatsApp link preview card */
+    /* Splash — fixed until tap */
     #appSplash {
-        position: absolute;
+        position: fixed;
         inset: 0;
-        z-index: 20;
+        z-index: 100;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: clamp(16px, 4vw, 24px);
         background: linear-gradient(180deg, #eef1f3 0%, #e3e8eb 100%);
         transition: opacity 0.55s ease, visibility 0.55s ease;
+        cursor: pointer;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
     }
 
-    #heroSection.started #appSplash {
+    #appSplash.is-hidden {
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
+    }
+
+    /* Video block — in page flow, scrollable page below */
+    .video-hero {
+        position: relative;
+        width: 100%;
+        height: min(100dvh, 900px);
+        min-height: min(85dvh, 520px);
+        background-color: #eceff1;
+        overflow: hidden;
     }
 
     .splash-card {
@@ -149,13 +121,13 @@
         animation: splashFloat 4s ease-in-out infinite;
     }
 
+    #appSplash.is-hidden .splash-card {
+        animation: none;
+    }
+
     @keyframes splashFloat {
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-8px); }
-    }
-
-    #heroSection.started .splash-card {
-        animation: none;
     }
 
     .splash-logo-wrap {
@@ -220,35 +192,42 @@
         transition: opacity 0.45s ease 0.15s;
     }
 
-    #heroSection.started #invitationVideo {
+    .video-hero.is-playing #invitationVideo {
         opacity: 1;
     }
 
-    /* Welcome — intro + names (below video hero) */
-    .welcome-section {
-        padding: clamp(48px, 10vw, 80px) clamp(16px, 4vw, 24px);
-        padding-left: max(clamp(16px, 4vw, 24px), env(safe-area-inset-left));
-        padding-right: max(clamp(16px, 4vw, 24px), env(safe-area-inset-right));
-        text-align: center;
-        background: linear-gradient(180deg, var(--bg-ice) 0%, #e8f2f8 55%, var(--primary-light-blue) 100%);
-        color: var(--dark-navy);
-    }
-
-    .welcome-inner {
+    #invitationText {
+        position: absolute;
+        top: 54%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
         max-width: min(96vw, 620px);
-        margin: 0 auto;
+        text-align: center;
+        z-index: 3;
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out;
+        pointer-events: none;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: clamp(28px, 6vh, 48px);
+        gap: clamp(24px, 5vh, 44px);
+        overflow: visible;
+        padding: 0 clamp(12px, 4vw, 24px);
+        box-sizing: border-box;
+    }
+
+    #invitationText.visible {
+        opacity: 1;
     }
 
     .intro-text {
         color: rgba(15, 37, 55, 0.95);
-        font-size: clamp(22px, 5vw, 38px);
-        line-height: 1.65;
+        font-size: clamp(26px, 5vw, 58px);
+        line-height: 1.6;
         margin: 0;
         max-width: min(92vw, 520px);
+        text-shadow: 2px 2px 15px rgba(255, 255, 255, 0.6);
     }
 
     .couple-names-vertical {
@@ -264,32 +243,35 @@
 
     .name-top {
         color: var(--name-deep-blue);
-        font-size: clamp(52px, 15vw, 120px);
-        transform: translateX(clamp(8px, 3vw, 32px));
-        margin-bottom: clamp(-12px, -2.5vw, -24px);
+        font-size: clamp(56px, 16vw, 140px);
+        transform: translateX(clamp(10px, 4vw, 40px));
+        margin-bottom: clamp(-14px, -3vw, -30px);
         z-index: 3;
         position: relative;
+        text-shadow: 2px 2px 15px rgba(255, 255, 255, 0.5);
         line-height: 1;
         white-space: nowrap;
     }
 
     .and-middle {
         color: var(--name-soft-blue);
-        font-size: clamp(42px, 12vw, 96px);
+        font-size: clamp(48px, 13vw, 120px);
         transform: translateX(clamp(-4px, -1.5vw, -12px));
-        margin-bottom: clamp(-14px, -3vw, -28px);
+        margin-bottom: clamp(-18px, -4vw, -36px);
         z-index: 2;
         position: relative;
+        text-shadow: 2px 2px 15px rgba(255, 255, 255, 0.5);
         line-height: 1;
         white-space: nowrap;
     }
 
     .name-bottom {
         color: var(--name-deep-blue);
-        font-size: clamp(52px, 15vw, 120px);
-        transform: translateX(clamp(-14px, -5vw, -44px));
+        font-size: clamp(56px, 16vw, 140px);
+        transform: translateX(clamp(-18px, -6vw, -55px));
         z-index: 1;
         position: relative;
+        text-shadow: 2px 2px 15px rgba(255, 255, 255, 0.5);
         line-height: 1;
         white-space: nowrap;
     }
@@ -905,32 +887,36 @@
             border-radius: 12px;
         }
 
-        .welcome-inner {
-            gap: clamp(22px, 5vh, 36px);
-        }
-
         .intro-text {
-            font-size: clamp(18px, 4.5vw, 26px);
-            max-width: min(94vw, 420px);
+            font-size: clamp(20px, 4.8vw, 28px);
         }
 
         .name-top,
         .name-bottom {
-            font-size: clamp(40px, 12vw, 58px);
+            font-size: clamp(44px, 13vw, 64px);
         }
 
         .name-top {
-            transform: translateX(clamp(5px, 2vw, 12px));
-            margin-bottom: clamp(-8px, -2vw, -16px);
+            transform: translateX(clamp(6px, 2.5vw, 14px));
+            margin-bottom: clamp(-10px, -2.5vw, -20px);
         }
 
         .name-bottom {
-            transform: translateX(clamp(-8px, -3vw, -20px));
+            transform: translateX(clamp(-10px, -3.5vw, -24px));
         }
 
         .and-middle {
-            font-size: clamp(34px, 10vw, 48px);
-            margin-bottom: clamp(-10px, -2.5vw, -20px);
+            font-size: clamp(38px, 11vw, 56px);
+            margin-bottom: clamp(-14px, -3vw, -26px);
+        }
+
+        #invitationText {
+            top: 52%;
+            gap: clamp(18px, 4vh, 32px);
+        }
+
+        .video-hero {
+            min-height: min(80dvh, 480px);
         }
 
         .date-box {
@@ -973,21 +959,22 @@
     }
 
     @media (max-height: 720px) {
-        .welcome-inner {
-            gap: clamp(18px, 4vh, 28px);
+        #invitationText {
+            top: 50%;
+            gap: clamp(16px, 3.5vh, 28px);
         }
 
         .intro-text {
-            font-size: clamp(16px, 3.8vw, 22px);
+            font-size: clamp(18px, 4vw, 24px);
         }
 
         .name-top,
         .name-bottom {
-            font-size: clamp(36px, 11vw, 50px);
+            font-size: clamp(40px, 12vw, 58px);
         }
 
         .and-middle {
-            font-size: clamp(30px, 9vw, 42px);
+            font-size: clamp(34px, 10vw, 50px);
         }
     }
 
@@ -1021,6 +1008,10 @@
         .splash-card,
         .splash-hint {
             animation: none !important;
+        }
+
+        #invitationText.visible {
+            opacity: 1;
         }
 
         .reveal {
@@ -1094,33 +1085,25 @@
         <source src="new-audio.mp3" type="audio/mpeg">
     </audio>
 
-    <div id="heroSection" oncontextmenu="return false;">
-
-        <div id="appSplash" aria-label="بانگهێشتنامەی ئیهاب و هەرڤین">
-            <div class="splash-card">
-                <div class="splash-logo-wrap">
-                    <img src="envelope-cover.png" alt="ئیهاب و هەرڤین" draggable="false">
-                </div>
-                <h1 class="splash-title">بانگهێشتنامەی<span class="splash-names">ئیهاب و هەرڤین</span></h1>
-                <p class="splash-hint">کلیک بکە بۆ کردنەوە</p>
+    <div id="appSplash" aria-label="بانگهێشتنامەی ئیهاب و هەرڤین">
+        <div class="splash-card">
+            <div class="splash-logo-wrap">
+                <img src="envelope-cover.png" alt="ئیهاب و هەرڤین" draggable="false">
             </div>
+            <h1 class="splash-title">بانگهێشتنامەی<span class="splash-names">ئیهاب و هەرڤین</span></h1>
+            <p class="splash-hint">کلیک بکە بۆ کردنەوە</p>
         </div>
+    </div>
 
+    <div id="videoHero" class="video-hero" oncontextmenu="return false;">
         <video id="invitationVideo" playsinline webkit-playsinline="true" preload="auto" muted
             controlsList="nodownload nofullscreen noremoteplayback" disablepictureinpicture disableremoteplayback
             oncontextmenu="return false;">
             <source src="tt.webm" type="video/webm">
             Your browser does not support the video tag.
         </video>
-    </div>
 
-    <div id="scrollDownHint" class="scroll-down-hint" aria-hidden="true">
-        <i class="fas fa-chevron-down"></i>
-        <span>خوارەوە بگەڕێ</span>
-    </div>
-
-    <section class="welcome-section reveal" id="welcomeSection">
-        <div class="welcome-inner">
+        <div id="invitationText">
             <p class="intro-text">بەخۆشی و خۆشەویستی شیرینی ئەدەین بە خزمانمان بۆ مارەکردنی</p>
             <div class="couple-names-vertical">
                 <div class="name-top">ئیهاب</div>
@@ -1128,7 +1111,12 @@
                 <div class="name-bottom">هەرڤین</div>
             </div>
         </div>
-    </section>
+    </div>
+
+    <div id="scrollDownHint" class="scroll-down-hint" aria-hidden="true">
+        <i class="fas fa-chevron-down"></i>
+        <span>خوارەوە بگەڕێ</span>
+    </div>
 
     <div class="section">
         <div class="date-box">
@@ -1292,10 +1280,12 @@
 
         const video = document.getElementById('invitationVideo');
         const bgMusic = document.getElementById('bgMusic');
-        const heroSection = document.getElementById('heroSection');
+        const appSplash = document.getElementById('appSplash');
+        const videoHero = document.getElementById('videoHero');
+        const invitationText = document.getElementById('invitationText');
         let hasStarted = false;
+        let isRevealed = false;
         let effectsStarted = false;
-        let scrollUnlocked = false;
 
         video.addEventListener('contextmenu', e => e.preventDefault());
         video.addEventListener('dragstart', e => e.preventDefault());
@@ -1320,45 +1310,6 @@
             forceFramePaint();
         }
 
-        function unlockUserScroll() {
-            if (!scrollUnlocked) {
-                scrollUnlocked = true;
-                document.documentElement.classList.add('scroll-unlocked');
-                document.body.classList.add('scroll-unlocked');
-                document.body.style.removeProperty('overflow');
-                document.body.style.removeProperty('overflow-x');
-                document.body.style.removeProperty('overflow-y');
-                document.body.style.removeProperty('touch-action');
-                document.documentElement.style.removeProperty('overflow');
-                document.documentElement.style.removeProperty('overflow-x');
-                document.documentElement.style.removeProperty('overflow-y');
-                document.documentElement.style.removeProperty('touch-action');
-            }
-        }
-
-        let touchStartY = 0;
-        let touchMoved = false;
-
-        heroSection.addEventListener('touchstart', (e) => {
-            touchStartY = e.touches[0].clientY;
-            touchMoved = false;
-        }, { passive: true });
-
-        heroSection.addEventListener('touchmove', (e) => {
-            if (Math.abs(e.touches[0].clientY - touchStartY) > 8) {
-                touchMoved = true;
-                if (hasStarted) {
-                    unlockUserScroll();
-                }
-            }
-        }, { passive: true });
-
-        heroSection.addEventListener('touchend', () => {
-            if (!touchMoved && !hasStarted) {
-                startInvitation();
-            }
-        }, { passive: true });
-
         function showScrollHint() {
             const hint = document.getElementById('scrollDownHint');
             if (hint) hint.classList.add('show');
@@ -1376,12 +1327,20 @@
             showScrollHint();
         }
 
+        function revealInvitation() {
+            if (!isRevealed) {
+                isRevealed = true;
+                invitationText.classList.add('visible');
+                startInvitationEffects();
+            }
+        }
+
         function startInvitation() {
             if (hasStarted) return;
             hasStarted = true;
-            heroSection.classList.add('started');
-            unlockUserScroll();
-            startInvitationEffects();
+            appSplash.classList.add('is-hidden');
+            videoHero.classList.add('is-playing');
+            showScrollHint();
 
             if (bgMusic.paused) {
                 bgMusic.play().catch(e => console.log("Audio play blocked by browser:", e));
@@ -1392,31 +1351,21 @@
             }
         }
 
+        appSplash.addEventListener('click', startInvitation);
+
         window.addEventListener('scroll', () => {
             if (window.scrollY > 40) hideScrollHint();
         }, { passive: true });
 
-        heroSection.addEventListener('click', () => {
-            if ('ontouchstart' in window) return;
-            startInvitation();
-        });
-
         video.addEventListener('timeupdate', () => {
-            if (video.currentTime >= 4.4) {
-                unlockUserScroll();
-            }
-
-            if (!isNaN(video.duration)) {
-                const timeLeft = video.duration - video.currentTime;
-                if (timeLeft <= 4) {
-                    startInvitationEffects();
-                }
+            const nearEnd = !isNaN(video.duration) && video.duration - video.currentTime <= 4;
+            if (video.currentTime >= 2.5 || nearEnd) {
+                revealInvitation();
             }
         });
 
         video.addEventListener('ended', () => {
-            unlockUserScroll();
-            startInvitationEffects();
+            revealInvitation();
         });
 
         const mapClickArea = document.getElementById('mapClickArea');
