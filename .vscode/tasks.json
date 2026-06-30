@@ -1,0 +1,37 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Wedding Card: Serve",
+      "type": "shell",
+      "command": "python -m http.server 8765",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": { "regexp": "^$" },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".",
+          "endsPattern": "."
+        }
+      },
+      "presentation": {
+        "reveal": "silent",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Wedding Card: Run in Cursor",
+      "dependsOn": ["Wedding Card: Serve"],
+      "type": "shell",
+      "command": "Start-Sleep -Seconds 1; cursor --open-url \"vscode://vscode.simple-browser/show?url=http://localhost:8765/\"",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "never",
+        "panel": "shared"
+      }
+    }
+  ]
+}
