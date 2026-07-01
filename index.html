@@ -2,15 +2,6 @@
 <html lang="ku" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>
-(function () {
-    var ua = navigator.userAgent || '';
-    var mobile = /Android|iPhone|iPad|iPod|Mobile|Telegram|webOS/i.test(ua)
-        || ('ontouchstart' in window && window.innerWidth < 1025);
-    if (mobile) document.documentElement.classList.add('is-mobile');
-    if (/Telegram|FBAN|FBAV|Instagram|Line\//i.test(ua)) document.documentElement.classList.add('is-inapp');
-})();
-</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="description" content="بانگهێشتنامەی ئیهاب و هەرڤین — دووشەممە ٦/٧/٢٠٢٦ — باغچەی ئاڤا">
 <meta property="og:title" content="بانگهێشتنامەی ئیهاب و هەرڤین">
@@ -92,9 +83,13 @@
     body {
         overflow-x: hidden;
         overflow-y: scroll;
-        touch-action: pan-y;
+        touch-action: manipulation;
         -webkit-overflow-scrolling: touch;
         overscroll-behavior-y: auto;
+    }
+
+    body.is-open {
+        touch-action: pan-y;
     }
 
     @media (max-width: 768px) {
@@ -113,59 +108,32 @@
         justify-content: center;
         padding: clamp(16px, 4vw, 24px);
         background: linear-gradient(180deg, #eef1f3 0%, #e3e8eb 100%);
+        transition: opacity 0.55s ease, visibility 0.55s ease;
         cursor: pointer;
-        touch-action: pan-y;
+        touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
     }
 
     #appSplash.is-hidden {
-        display: none !important;
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
     }
 
-    html.is-mobile .splash-logo-wrap {
-        display: none;
-    }
-
-    html.is-mobile .splash-card {
-        background: transparent;
-        box-shadow: none;
-        animation: none;
-    }
-
-    html.is-mobile .splash-hint {
-        font-size: clamp(15px, 4vw, 18px);
-        color: var(--name-deep-blue);
-        opacity: 1;
-        animation: hintPulse 1.8s ease-in-out infinite;
-    }
-
-    html.is-mobile .splash-title {
-        font-size: clamp(20px, 5.5vw, 26px);
-    }
-
-    html.is-mobile .splash-names {
-        font-size: clamp(24px, 6.5vw, 32px);
-    }
-
-    /* Video block — collapsed until open */
+    /* Video block — full screen while playing */
     .video-hero {
         position: relative;
         width: 100%;
-        height: 0;
-        min-height: 0;
+        height: 100dvh;
+        height: 100svh;
+        min-height: 100dvh;
+        min-height: 100svh;
         background-color: #eceff1;
         overflow: hidden;
         touch-action: pan-y;
     }
 
     .video-hero.is-playing {
-        overflow: visible;
-    }
-
-    .video-hero.is-playing:not(.is-lite) {
         height: 100dvh;
         height: 100svh;
         min-height: 100dvh;
@@ -174,122 +142,6 @@
         max-height: 100svh;
         pointer-events: none;
         touch-action: pan-y;
-    }
-
-    .video-hero.is-lite {
-        height: auto;
-        min-height: 0;
-        max-height: none;
-        pointer-events: auto;
-        touch-action: pan-y;
-        overflow: visible;
-        background: linear-gradient(145deg, #f5f0e8 0%, #f5f0e8 38%, #1b5282 38%, #0f2537 100%);
-    }
-
-    .video-hero.is-lite.is-playing {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        padding: clamp(24px, 7vw, 44px) clamp(16px, 4vw, 24px) clamp(12px, 3vw, 16px);
-        pointer-events: auto;
-        touch-action: pan-y;
-    }
-
-    .video-hero.is-lite .play-video-btn {
-        pointer-events: auto;
-        flex-shrink: 0;
-    }
-
-    html.is-inapp .play-video-btn {
-        display: none !important;
-    }
-
-    .video-hero.is-lite #invitationVideo {
-        display: none;
-    }
-
-    .lite-hero-deco {
-        display: none;
-        position: absolute;
-        inset: 0;
-        z-index: 0;
-        pointer-events: none;
-        overflow: hidden;
-    }
-
-    .video-hero.is-lite .lite-hero-deco {
-        display: block;
-        position: relative;
-        inset: auto;
-        width: 100%;
-        height: auto;
-        min-height: 40px;
-        margin-bottom: 4px;
-    }
-
-    .video-hero.is-lite .lite-butterfly {
-        position: relative;
-        top: auto;
-        left: auto;
-        transform: none;
-        display: block;
-        text-align: center;
-        margin: 0 auto;
-        font-size: clamp(48px, 14vw, 88px);
-        opacity: 0.85;
-        filter: drop-shadow(0 4px 12px rgba(27, 82, 130, 0.35));
-    }
-
-    .video-hero.is-lite #invitationText {
-        position: relative;
-        top: auto;
-        left: auto;
-        transform: none;
-        opacity: 1;
-        padding: 8px 0 4px;
-        flex: 0 0 auto;
-        gap: clamp(12px, 3vh, 24px);
-    }
-
-    .video-hero.is-lite .intro-text {
-        font-size: clamp(16px, 4vw, 22px);
-    }
-
-    .video-hero.is-lite.is-inline-video #invitationVideo {
-        display: block;
-        position: relative;
-        top: auto;
-        left: auto;
-        width: 100%;
-        height: auto;
-        max-height: min(50vh, 380px);
-        object-fit: contain;
-        opacity: 1;
-        margin-top: 8px;
-        border-radius: 8px;
-    }
-
-    .play-video-btn {
-        display: none;
-        position: relative;
-        z-index: 5;
-        margin: clamp(12px, 3vh, 20px) auto clamp(16px, 4vh, 28px);
-        padding: 10px 18px;
-        border: 1px solid rgba(74, 144, 226, 0.45);
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.92);
-        color: var(--name-deep-blue);
-        font-family: inherit;
-        font-size: clamp(13px, 3.4vw, 15px);
-        cursor: pointer;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-        box-shadow: 0 4px 16px rgba(15, 37, 55, 0.12);
-    }
-
-    .video-hero.is-lite .play-video-btn {
-        display: block;
     }
 
     .splash-card {
@@ -388,7 +240,7 @@
         align-items: center;
         justify-content: center;
         gap: 14px;
-        background: rgba(236, 239, 241, 0.97);
+        background: rgba(236, 239, 241, 0.92);
         color: var(--name-deep-blue);
         font-size: clamp(15px, 4vw, 18px);
         pointer-events: none;
@@ -1310,7 +1162,7 @@
     <div id="appSplash" role="button" tabindex="0" aria-label="بانگهێشتنامەی ئیهاب و هەرڤین — کلیک بکە بۆ کردنەوە">
         <div class="splash-card">
             <div class="splash-logo-wrap">
-                <img src="og-invite-cover.png" alt="ئیهاب و هەرڤین" draggable="false" width="400" height="301" decoding="async">
+                <img src="og-invite-cover.png" alt="ئیهاب و هەرڤین" draggable="false" width="400" height="301" fetchpriority="high" decoding="async">
             </div>
             <h1 class="splash-title">بانگهێشتنامەی<span class="splash-names">ئیهاب و هەرڤین</span></h1>
             <p class="splash-hint">کلیک بکە بۆ کردنەوە</p>
@@ -1318,20 +1170,16 @@
     </div>
 
     <div id="videoHero" class="video-hero" oncontextmenu="return false;">
-        <div class="lite-hero-deco" aria-hidden="true">
-            <span class="lite-butterfly">🦋</span>
-        </div>
-
-        <video id="invitationVideo" playsinline webkit-playsinline="true" preload="none" muted
+        <video id="invitationVideo" playsinline webkit-playsinline="true" preload="none" poster="og-invite-cover.png" muted
             controlsList="nodownload nofullscreen noremoteplayback" disablepictureinpicture disableremoteplayback
             oncontextmenu="return false;">
-            <source data-src="tt.webm" data-src-mobile="tt-mobile.webm" type="video/webm">
+            <source src="tt.webm" type="video/webm">
             Your browser does not support the video tag.
         </video>
 
         <div id="videoLoading" class="video-loading" aria-live="polite" aria-hidden="true">
             <div class="video-loading-spinner" aria-hidden="true"></div>
-            <span>ڤیدیۆ دادەگیرێت...</span>
+            <span>چاوەڕوان بە...</span>
         </div>
 
         <div id="invitationText">
@@ -1342,8 +1190,6 @@
                 <div class="name-bottom">هەرڤین</div>
             </div>
         </div>
-
-        <button type="button" id="playVideoBtn" class="play-video-btn">ڤیدیۆی کردنەوە ببینە</button>
     </div>
 
     <div id="scrollDownHint" class="scroll-down-hint" aria-hidden="true">
@@ -1469,51 +1315,11 @@
     </footer>
 
     <script>
-        function getConnection() {
-            return navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-        }
-
-        function isMobileDevice() {
-            const ua = navigator.userAgent || '';
-            if (/Android|iPhone|iPad|iPod|Mobile|Telegram/i.test(ua)) return true;
-            if ('ontouchstart' in window && window.innerWidth < 1024) return true;
-            return window.matchMedia('(max-width: 900px)').matches;
-        }
-
-        function isInAppBrowser() {
-            return /Telegram|FBAN|FBAV|Instagram|Line\//i.test(navigator.userAgent || '');
-        }
-
         function isSlowConnection() {
-            const conn = getConnection();
-            if (isInAppBrowser()) return true;
-            if (!conn) return isMobileDevice();
+            const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            if (!conn) return false;
             if (conn.saveData) return true;
-            if (['slow-2g', '2g', '3g'].includes(conn.effectiveType)) return true;
-            if (conn.type === 'cellular' || conn.type === 'wimax') return true;
-            if (isMobileDevice() && conn.type !== 'wifi' && conn.type !== 'ethernet') return true;
-            if (isMobileDevice() && conn.downlink > 0 && conn.downlink < 2.5) return true;
-            return false;
-        }
-
-        function shouldUseLiteMode() {
-            if (document.documentElement.classList.contains('is-mobile')) return true;
-            if (isInAppBrowser()) return true;
-            return isMobileDevice();
-        }
-
-        function nudgeScrollDown() {
-            const dateSection = document.querySelector('.section');
-            if (!dateSection) return;
-            requestAnimationFrame(() => {
-                const top = Math.max(0, dateSection.offsetTop - 24);
-                window.scrollTo(0, top);
-            });
-        }
-
-        function hideSplash() {
-            appSplash.classList.add('is-hidden');
-            appSplash.style.display = 'none';
+            return ['slow-2g', '2g', '3g'].includes(conn.effectiveType);
         }
 
         function createFlowerRain() {
@@ -1568,14 +1374,10 @@
         const videoHero = document.getElementById('videoHero');
         const invitationText = document.getElementById('invitationText');
         const videoLoading = document.getElementById('videoLoading');
-        const playVideoBtn = document.getElementById('playVideoBtn');
-        const videoSource = video.querySelector('source');
         let hasStarted = false;
         let isRevealed = false;
         let effectsStarted = false;
         let loadFallbackTimer = null;
-        let loadingMaxTimer = null;
-        let usingLiteMode = false;
 
         video.addEventListener('contextmenu', e => e.preventDefault());
         video.addEventListener('dragstart', e => e.preventDefault());
@@ -1584,6 +1386,14 @@
             img.addEventListener('contextmenu', e => e.preventDefault());
             img.addEventListener('dragstart', e => e.preventDefault());
         });
+
+        const forceFramePaint = () => {
+            try {
+                video.currentTime = 0.001;
+            } catch (e) {}
+        };
+
+        video.addEventListener('loadeddata', forceFramePaint);
 
         function showScrollHint() {
             const hint = document.getElementById('scrollDownHint');
@@ -1619,10 +1429,6 @@
                 clearTimeout(loadFallbackTimer);
                 loadFallbackTimer = null;
             }
-            if (loadingMaxTimer) {
-                clearTimeout(loadingMaxTimer);
-                loadingMaxTimer = null;
-            }
         }
 
         function showVideoLoading() {
@@ -1633,11 +1439,10 @@
         }
 
         function startMediaPlayback() {
+            hideVideoLoading();
             video.play().catch(e => console.log("Video play blocked:", e));
-            if (!usingLiteMode) {
-                bgMusic.load();
-                bgMusic.play().catch(e => console.log("Audio play blocked by browser:", e));
-            }
+            bgMusic.load();
+            bgMusic.play().catch(e => console.log("Audio play blocked by browser:", e));
         }
 
         function enablePageScroll() {
@@ -1646,85 +1451,27 @@
             document.body.style.overflowY = 'scroll';
             document.body.style.touchAction = 'pan-y';
             document.documentElement.style.touchAction = 'pan-y';
-            requestAnimationFrame(() => {
-                window.scrollTo(0, 0);
-                setTimeout(() => window.scrollTo(0, 1), 80);
-            });
-        }
-
-        function attachVideoSource() {
-            if (!videoSource || !videoSource.dataset.src) return;
-            if (videoSource.getAttribute('src')) return;
-            const mobileSrc = videoSource.dataset.srcMobile;
-            videoSource.src = (isMobileDevice() && mobileSrc) ? mobileSrc : videoSource.dataset.src;
-        }
-
-        function startFullVideo() {
-            usingLiteMode = false;
-            videoHero.classList.add('is-inline-video');
-            attachVideoSource();
-            showVideoLoading();
-            loadingMaxTimer = setTimeout(hideVideoLoading, isSlowConnection() ? 28000 : 16000);
-            video.load();
-
-            if (video.readyState >= 2) {
-                startMediaPlayback();
-            } else {
-                video.addEventListener('canplay', startMediaPlayback, { once: true });
-                loadFallbackTimer = setTimeout(startMediaPlayback, isSlowConnection() ? 20000 : 12000);
-            }
-        }
-
-        function startLiteInvitation() {
-            if (hasStarted) return;
-            hasStarted = true;
-            usingLiteMode = true;
-            hideSplash();
-            videoHero.classList.add('is-playing', 'is-lite');
-            enablePageScroll();
-            revealInvitation();
-            hideVideoLoading();
-            showScrollHint();
-            setTimeout(nudgeScrollDown, 120);
-        }
-
-        function startFullInvitation() {
-            if (hasStarted) return;
-            hasStarted = true;
-            hideSplash();
-            videoHero.classList.add('is-playing');
-            enablePageScroll();
-            attachVideoSource();
-            showVideoLoading();
-            loadingMaxTimer = setTimeout(hideVideoLoading, isSlowConnection() ? 28000 : 16000);
-            video.load();
-
-            if (video.readyState >= 2) {
-                startMediaPlayback();
-            } else {
-                video.addEventListener('canplay', startMediaPlayback, { once: true });
-                loadFallbackTimer = setTimeout(startMediaPlayback, isSlowConnection() ? 20000 : 12000);
-            }
         }
 
         function startInvitation() {
             if (hasStarted) return;
-            if (shouldUseLiteMode()) {
-                startLiteInvitation();
+            hasStarted = true;
+            appSplash.classList.add('is-hidden');
+            videoHero.classList.add('is-playing');
+            enablePageScroll();
+            showScrollHint();
+            showVideoLoading();
+
+            video.load();
+
+            if (video.readyState >= 2) {
+                startMediaPlayback();
             } else {
-                startFullInvitation();
+                video.addEventListener('canplay', startMediaPlayback, { once: true });
+                loadFallbackTimer = setTimeout(startMediaPlayback, isSlowConnection() ? 20000 : 12000);
             }
         }
 
-        if (playVideoBtn) {
-            playVideoBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                playVideoBtn.style.display = 'none';
-                startFullVideo();
-            });
-        }
-
-        appSplash.addEventListener('pointerup', startInvitation);
         appSplash.addEventListener('click', startInvitation);
         appSplash.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -1737,19 +1484,11 @@
             if (window.scrollY > 40) hideScrollHint();
         }, { passive: true });
 
-        video.addEventListener('playing', () => {
-            if (video.currentTime > 0.05) hideVideoLoading();
-        });
-
-        video.addEventListener('waiting', () => {
-            if (hasStarted && !usingLiteMode && !video.ended) showVideoLoading();
-        });
-
         video.addEventListener('timeupdate', () => {
-            if (!isNaN(video.duration) && video.duration - video.currentTime <= 4) {
+            const nearEnd = !isNaN(video.duration) && video.duration - video.currentTime <= 4;
+            if (video.currentTime >= 2.5 || nearEnd) {
                 revealInvitation();
             }
-            if (video.currentTime > 0.05) hideVideoLoading();
         });
 
         video.addEventListener('ended', () => {
