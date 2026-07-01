@@ -25,8 +25,6 @@
 <link rel="apple-touch-icon" href="og-invite-cover.png">
 
 <title>بانگهێشتنامەی ئیهاب و هەرڤین</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"></noscript>
 <style>
     /* 1. CSS VARIABLES — ROYAL BLUE THEME */
     :root {
@@ -44,8 +42,15 @@
     /* 2. IMPORT YOUR CUSTOM FONT */
     @font-face {
         font-family: 'UniSalar_F_097';
-        src: url('Xoshnus.ttf') format('truetype'); 
-        font-display: swap; 
+        src: url('Xoshnus.ttf') format('truetype');
+        font-display: optional;
+    }
+
+    .ico {
+        display: inline-block;
+        font-style: normal;
+        line-height: 1;
+        vertical-align: middle;
     }
 
     /* 3. RESET & SETUP */
@@ -226,6 +231,38 @@
         opacity: 1;
     }
 
+    .video-loading {
+        position: absolute;
+        inset: 0;
+        z-index: 4;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        background: rgba(236, 239, 241, 0.92);
+        color: var(--name-deep-blue);
+        font-size: clamp(15px, 4vw, 18px);
+        pointer-events: none;
+    }
+
+    .video-loading.show {
+        display: flex;
+    }
+
+    .video-loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(74, 144, 226, 0.25);
+        border-top-color: var(--primary-baby-blue);
+        border-radius: 50%;
+        animation: spinLoad 0.8s linear infinite;
+    }
+
+    @keyframes spinLoad {
+        to { transform: rotate(360deg); }
+    }
+
     #invitationText {
         position: absolute;
         top: 54%;
@@ -330,7 +367,7 @@
         visibility: visible;
     }
 
-    .scroll-down-hint i {
+    .scroll-down-hint .ico {
         animation: scrollBounce 1.6s ease-in-out infinite;
     }
 
@@ -417,7 +454,7 @@
     .date-day { font-size: clamp(2rem, 5vw, 3rem); color: var(--primary-light-blue); margin: 0 0 10px; font-weight: normal; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
     .date-divider { display: flex; align-items: center; justify-content: center; margin: 25px 0; gap: 15px; }
     .date-divider::before, .date-divider::after { content: ''; height: 1px; background: linear-gradient(90deg, transparent, var(--primary-light-blue), transparent); flex: 1; opacity: 0.6; }
-    .date-divider i { color: var(--primary-baby-blue); font-size: clamp(1.2rem, 3vw, 1.4rem); animation: heartbeat 1.5s infinite; filter: drop-shadow(0 0 8px rgba(74, 144, 226, 0.6)); }
+    .date-divider .ico { color: var(--primary-baby-blue); font-size: clamp(1.2rem, 3vw, 1.4rem); animation: heartbeat 1.5s infinite; filter: drop-shadow(0 0 8px rgba(74, 144, 226, 0.6)); }
 
     @keyframes heartbeat {
         0% { transform: scale(1); }
@@ -447,12 +484,12 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
     .time-text { font-size: clamp(1.3rem, 4vw, 1.8rem); color: var(--text-muted); margin: 0; }
-    .time-container i { color: var(--primary-light-blue); font-size: clamp(1.3rem, 4vw, 1.6rem); }
+    .time-container .ico { color: var(--primary-light-blue); font-size: clamp(1.3rem, 4vw, 1.6rem); }
 
     /* =========================================
         LOCATION DESIGN
         ========================================= */
-    .location-header i {
+    .location-header .ico {
         font-size: clamp(2.5rem, 6vw, 3rem);
         color: var(--primary-baby-blue);
         margin-bottom: 10px;
@@ -886,6 +923,12 @@
         transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     }
 
+    .footer-social-link .ico {
+        font-size: 0.75em;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+    }
+
     .footer-social-link:hover,
     .footer-social-link:focus-visible {
         transform: translateY(-3px) scale(1.06);
@@ -1034,7 +1077,7 @@
     @media (prefers-reduced-motion: reduce) {
         .reveal,
         .flower,
-        .date-divider i,
+        .date-divider .ico,
         .splash-card,
         .splash-hint {
             animation: none !important;
@@ -1119,7 +1162,7 @@
     <div id="appSplash" role="button" tabindex="0" aria-label="بانگهێشتنامەی ئیهاب و هەرڤین — کلیک بکە بۆ کردنەوە">
         <div class="splash-card">
             <div class="splash-logo-wrap">
-                <img src="og-invite-cover.png" alt="ئیهاب و هەرڤین" draggable="false">
+                <img src="og-invite-cover.png" alt="ئیهاب و هەرڤین" draggable="false" width="400" height="301" fetchpriority="high" decoding="async">
             </div>
             <h1 class="splash-title">بانگهێشتنامەی<span class="splash-names">ئیهاب و هەرڤین</span></h1>
             <p class="splash-hint">کلیک بکە بۆ کردنەوە</p>
@@ -1134,6 +1177,11 @@
             Your browser does not support the video tag.
         </video>
 
+        <div id="videoLoading" class="video-loading" aria-live="polite" aria-hidden="true">
+            <div class="video-loading-spinner" aria-hidden="true"></div>
+            <span>چاوەڕوان بە...</span>
+        </div>
+
         <div id="invitationText">
             <p class="intro-text">بەخۆشی و خۆشەویستی شیرینی ئەدەین بە خزمانمان بۆ مارەکردنی</p>
             <div class="couple-names-vertical">
@@ -1145,7 +1193,7 @@
     </div>
 
     <div id="scrollDownHint" class="scroll-down-hint" aria-hidden="true">
-        <i class="fas fa-chevron-down"></i>
+        <span class="ico" aria-hidden="true">▼</span>
         <span>خوارەوە بگەڕێ</span>
     </div>
 
@@ -1155,7 +1203,7 @@
                 <h3 class="date-day">ڕۆژی دووشەممە</h3>
                 
                 <div class="date-divider">
-                    <i class="fas fa-heart"></i>
+                    <span class="ico" aria-hidden="true">♥</span>
                 </div>
                 
                 <div class="date-numbers">
@@ -1176,7 +1224,7 @@
                 </div>
                 
                 <div class="time-container">
-                    <i class="far fa-clock"></i>
+                    <span class="ico" aria-hidden="true">⏰</span>
                     <p class="time-text">کاتژمێر ٨:٠٠ ی ئێوارە</p>
                 </div>
             </div>
@@ -1185,7 +1233,7 @@
 
     <div class="section section-light reveal">
         <div class="location-header">
-            <i class="fas fa-map-marked-alt"></i>
+            <span class="ico" aria-hidden="true">📍</span>
             <h2 class="section-title">شوێن</h2>
         </div>
         
@@ -1197,7 +1245,8 @@
             class="map-container" id="mapClickArea" target="_blank" rel="noopener noreferrer"
             aria-label="کردنەوەی ڕێگا لە گۆگڵ مەپس">
             <iframe 
-                src="https://maps.google.com/maps?q=36.276039,44.011734&t=&z=16&hl=ku&output=embed"
+                data-src="https://maps.google.com/maps?q=36.276039,44.011734&t=&z=16&hl=ku&output=embed"
+                src="about:blank"
                 allowfullscreen="" 
                 loading="lazy" 
                 referrerpolicy="no-referrer-when-downgrade"
@@ -1205,7 +1254,7 @@
             </iframe>
             <div class="map-click-overlay" aria-hidden="true">
                 <span class="map-open-label">
-                    <i class="fas fa-route"></i>
+                    <span class="ico" aria-hidden="true">➤</span>
                     کلیک بکە — ڕێگا لە گۆگڵ مەپس
                 </span>
             </div>
@@ -1215,7 +1264,7 @@
 
     <div class="section reveal">
         <div class="dress-wrapper">
-            <i class="fas fa-gem dress-icon-img" aria-hidden="true"></i>
+            <span class="ico dress-icon-img" aria-hidden="true">✦</span>
             <h2 class="dress-title">ئامادەبوونتان شادمانیمانە</h2>
             <p class="dress-desc">ئاهەنگەکەمان بە بوونی ئێوەوە ڕەنگینە، هاتنتان <span class="dress-highlight">مایەی گەورەییمانە</span> و نەخشی خەندە دەخاتە سەر یادەکەمان.</p>
         </div>
@@ -1224,14 +1273,14 @@
     <div class="section reveal">
         <div class="contact-wrapper">
             <div class="contact-icon-box">
-                <i class="fas fa-envelope-open-text"></i>
+                <span class="ico" aria-hidden="true">✉</span>
             </div>
             <h2 class="section-title">پەیوەندی</h2>
             <p class="contact-desc">بۆ هەر پرسیار و زانیارییەک، لە خزمەتتاندین</p>
             
             <div class="contact-buttons-group">
                 <a href="https://wa.me/9647507442623" class="whatsapp-btn" target="_blank">
-                    <i class="fab fa-whatsapp"></i> ٠٧٥٠٧٤٤٢٦٢٣
+                    <span class="ico" aria-hidden="true">💬</span> ٠٧٥٠٧٤٤٢٦٢٣
                 </a>
             </div>
         </div>
@@ -1240,7 +1289,7 @@
     <footer class="footer-section reveal" id="smartServeFooter">
         <div class="footer-inner">
             <div class="footer-logo-wrap">
-                <img src="smartserve-logo.png" alt="SmartServe" draggable="false">
+                <img src="smartserve-logo.png" alt="SmartServe" draggable="false" loading="lazy" decoding="async">
             </div>
             <div class="footer-typewriter-box">
                 <p class="footer-typewriter" id="footerTypewriter" aria-live="polite">
@@ -1252,13 +1301,13 @@
                 <p class="footer-social-label">تابەکەمان لە تۆڕەکانی کۆمەڵایەتی</p>
                 <div class="footer-social-links">
                     <a href="https://www.instagram.com/smartserve_krd?igsh=MWcwNW50emg3dTNmcg%3D%3D&utm_source=qr" class="footer-social-link footer-social-instagram" target="_blank" rel="noopener noreferrer" aria-label="Instagram — SmartServe">
-                        <i class="fab fa-instagram" aria-hidden="true"></i>
+                        <span class="ico" aria-hidden="true">IG</span>
                     </a>
                     <a href="https://www.tiktok.com/@smartserve1?_r=1&_t=ZS-97d3xWZTma7" class="footer-social-link footer-social-tiktok" target="_blank" rel="noopener noreferrer" aria-label="TikTok — SmartServe">
-                        <i class="fab fa-tiktok" aria-hidden="true"></i>
+                        <span class="ico" aria-hidden="true">TT</span>
                     </a>
                     <a href="https://www.facebook.com/share/1CANRvgXNM/?mibextid=wwXIfr" class="footer-social-link footer-social-facebook" target="_blank" rel="noopener noreferrer" aria-label="Facebook — SmartServe">
-                        <i class="fab fa-facebook-f" aria-hidden="true"></i>
+                        <span class="ico" aria-hidden="true">f</span>
                     </a>
                 </div>
             </div>
@@ -1266,11 +1315,19 @@
     </footer>
 
     <script>
+        function isSlowConnection() {
+            const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            if (!conn) return false;
+            if (conn.saveData) return true;
+            return ['slow-2g', '2g', '3g'].includes(conn.effectiveType);
+        }
+
         function createFlowerRain() {
+            if (isSlowConnection()) return;
             const container = document.getElementById('flower-container');
             const flowerImages = ['f1.webp', 'f2.webp']; 
             const isMobile = window.matchMedia('(max-width: 768px)').matches;
-            const numFlowers = isMobile ? 4 : 6; 
+            const numFlowers = isMobile ? 2 : 4; 
 
             for (let i = 0; i < numFlowers; i++) {
                 const flower = document.createElement('img');
@@ -1316,9 +1373,11 @@
         const appSplash = document.getElementById('appSplash');
         const videoHero = document.getElementById('videoHero');
         const invitationText = document.getElementById('invitationText');
+        const videoLoading = document.getElementById('videoLoading');
         let hasStarted = false;
         let isRevealed = false;
         let effectsStarted = false;
+        let loadFallbackTimer = null;
 
         video.addEventListener('contextmenu', e => e.preventDefault());
         video.addEventListener('dragstart', e => e.preventDefault());
@@ -1361,6 +1420,31 @@
             }
         }
 
+        function hideVideoLoading() {
+            if (videoLoading) {
+                videoLoading.classList.remove('show');
+                videoLoading.setAttribute('aria-hidden', 'true');
+            }
+            if (loadFallbackTimer) {
+                clearTimeout(loadFallbackTimer);
+                loadFallbackTimer = null;
+            }
+        }
+
+        function showVideoLoading() {
+            if (videoLoading) {
+                videoLoading.classList.add('show');
+                videoLoading.setAttribute('aria-hidden', 'false');
+            }
+        }
+
+        function startMediaPlayback() {
+            hideVideoLoading();
+            video.play().catch(e => console.log("Video play blocked:", e));
+            bgMusic.load();
+            bgMusic.play().catch(e => console.log("Audio play blocked by browser:", e));
+        }
+
         function enablePageScroll() {
             document.body.classList.add('is-open');
             document.documentElement.style.overflowY = 'scroll';
@@ -1376,16 +1460,15 @@
             videoHero.classList.add('is-playing');
             enablePageScroll();
             showScrollHint();
+            showVideoLoading();
 
             video.load();
 
-            if (bgMusic.paused) {
-                bgMusic.load();
-                bgMusic.play().catch(e => console.log("Audio play blocked by browser:", e));
-            }
-
-            if (video.paused && !video.ended) {
-                video.play().catch(e => console.log("Video play blocked:", e));
+            if (video.readyState >= 2) {
+                startMediaPlayback();
+            } else {
+                video.addEventListener('canplay', startMediaPlayback, { once: true });
+                loadFallbackTimer = setTimeout(startMediaPlayback, isSlowConnection() ? 20000 : 12000);
             }
         }
 
@@ -1411,6 +1494,19 @@
         video.addEventListener('ended', () => {
             revealInvitation();
         });
+
+        const mapFrame = document.querySelector('.map-container iframe[data-src]');
+        if (mapFrame) {
+            const mapObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && mapFrame.dataset.src) {
+                        mapFrame.src = mapFrame.dataset.src;
+                        observer.unobserve(mapFrame);
+                    }
+                });
+            }, { rootMargin: '120px' });
+            mapObserver.observe(mapFrame);
+        }
 
         const typewriterEl = document.getElementById('typewriterKurdish');
         const footerSection = document.getElementById('smartServeFooter');
