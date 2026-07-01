@@ -2,6 +2,15 @@
 <html lang="ku" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<script>
+(function () {
+    var ua = navigator.userAgent || '';
+    var mobile = /Android|iPhone|iPad|iPod|Mobile|Telegram|webOS/i.test(ua)
+        || ('ontouchstart' in window && window.innerWidth < 1025);
+    if (mobile) document.documentElement.classList.add('is-mobile');
+    if (/Telegram|FBAN|FBAV|Instagram|Line\//i.test(ua)) document.documentElement.classList.add('is-inapp');
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="description" content="بانگهێشتنامەی ئیهاب و هەرڤین — دووشەممە ٦/٧/٢٠٢٦ — باغچەی ئاڤا">
 <meta property="og:title" content="بانگهێشتنامەی ئیهاب و هەرڤین">
@@ -104,16 +113,41 @@
         justify-content: center;
         padding: clamp(16px, 4vw, 24px);
         background: linear-gradient(180deg, #eef1f3 0%, #e3e8eb 100%);
-        transition: opacity 0.55s ease, visibility 0.55s ease;
         cursor: pointer;
-        touch-action: manipulation;
+        touch-action: pan-y;
         -webkit-tap-highlight-color: transparent;
     }
 
     #appSplash.is-hidden {
+        display: none !important;
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
+    }
+
+    html.is-mobile .splash-logo-wrap {
+        display: none;
+    }
+
+    html.is-mobile .splash-card {
+        background: transparent;
+        box-shadow: none;
+        animation: none;
+    }
+
+    html.is-mobile .splash-hint {
+        font-size: clamp(15px, 4vw, 18px);
+        color: var(--name-deep-blue);
+        opacity: 1;
+        animation: hintPulse 1.8s ease-in-out infinite;
+    }
+
+    html.is-mobile .splash-title {
+        font-size: clamp(20px, 5.5vw, 26px);
+    }
+
+    html.is-mobile .splash-names {
+        font-size: clamp(24px, 6.5vw, 32px);
     }
 
     /* Video block — collapsed until open */
@@ -128,16 +162,7 @@
     }
 
     .video-hero.is-playing {
-        overflow: hidden;
-    }
-
-    .video-hero.is-lite #invitationText {
-        top: 48%;
-        gap: clamp(12px, 3vh, 24px);
-    }
-
-    .video-hero.is-lite .intro-text {
-        font-size: clamp(18px, 4.2vw, 34px);
+        overflow: visible;
     }
 
     .video-hero.is-playing:not(.is-lite) {
@@ -153,19 +178,31 @@
 
     .video-hero.is-lite {
         height: auto;
-        min-height: min(58svh, 520px);
+        min-height: 0;
         max-height: none;
-        pointer-events: none;
+        pointer-events: auto;
         touch-action: pan-y;
+        overflow: visible;
         background: linear-gradient(145deg, #f5f0e8 0%, #f5f0e8 38%, #1b5282 38%, #0f2537 100%);
     }
 
     .video-hero.is-lite.is-playing {
-        pointer-events: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: clamp(24px, 7vw, 44px) clamp(16px, 4vw, 24px) clamp(12px, 3vw, 16px);
+        pointer-events: auto;
+        touch-action: pan-y;
     }
 
     .video-hero.is-lite .play-video-btn {
         pointer-events: auto;
+        flex-shrink: 0;
+    }
+
+    html.is-inapp .play-video-btn {
+        display: none !important;
     }
 
     .video-hero.is-lite #invitationVideo {
@@ -183,16 +220,54 @@
 
     .video-hero.is-lite .lite-hero-deco {
         display: block;
+        position: relative;
+        inset: auto;
+        width: 100%;
+        height: auto;
+        min-height: 40px;
+        margin-bottom: 4px;
     }
 
-    .lite-butterfly {
-        position: absolute;
-        top: 8%;
-        left: 50%;
-        transform: translateX(-50%);
+    .video-hero.is-lite .lite-butterfly {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        display: block;
+        text-align: center;
+        margin: 0 auto;
         font-size: clamp(48px, 14vw, 88px);
         opacity: 0.85;
         filter: drop-shadow(0 4px 12px rgba(27, 82, 130, 0.35));
+    }
+
+    .video-hero.is-lite #invitationText {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        opacity: 1;
+        padding: 8px 0 4px;
+        flex: 0 0 auto;
+        gap: clamp(12px, 3vh, 24px);
+    }
+
+    .video-hero.is-lite .intro-text {
+        font-size: clamp(16px, 4vw, 22px);
+    }
+
+    .video-hero.is-lite.is-inline-video #invitationVideo {
+        display: block;
+        position: relative;
+        top: auto;
+        left: auto;
+        width: 100%;
+        height: auto;
+        max-height: min(50vh, 380px);
+        object-fit: contain;
+        opacity: 1;
+        margin-top: 8px;
+        border-radius: 8px;
     }
 
     .play-video-btn {
@@ -1235,7 +1310,7 @@
     <div id="appSplash" role="button" tabindex="0" aria-label="بانگهێشتنامەی ئیهاب و هەرڤین — کلیک بکە بۆ کردنەوە">
         <div class="splash-card">
             <div class="splash-logo-wrap">
-                <img src="og-invite-cover.png" alt="ئیهاب و هەرڤین" draggable="false" width="400" height="301" fetchpriority="high" decoding="async">
+                <img src="og-invite-cover.png" alt="ئیهاب و هەرڤین" draggable="false" width="400" height="301" decoding="async">
             </div>
             <h1 class="splash-title">بانگهێشتنامەی<span class="splash-names">ئیهاب و هەرڤین</span></h1>
             <p class="splash-hint">کلیک بکە بۆ کردنەوە</p>
@@ -1422,8 +1497,23 @@
         }
 
         function shouldUseLiteMode() {
+            if (document.documentElement.classList.contains('is-mobile')) return true;
             if (isInAppBrowser()) return true;
             return isMobileDevice();
+        }
+
+        function nudgeScrollDown() {
+            const dateSection = document.querySelector('.section');
+            if (!dateSection) return;
+            requestAnimationFrame(() => {
+                const top = Math.max(0, dateSection.offsetTop - 24);
+                window.scrollTo(0, top);
+            });
+        }
+
+        function hideSplash() {
+            appSplash.classList.add('is-hidden');
+            appSplash.style.display = 'none';
         }
 
         function createFlowerRain() {
@@ -1571,7 +1661,7 @@
 
         function startFullVideo() {
             usingLiteMode = false;
-            videoHero.classList.remove('is-lite');
+            videoHero.classList.add('is-inline-video');
             attachVideoSource();
             showVideoLoading();
             loadingMaxTimer = setTimeout(hideVideoLoading, isSlowConnection() ? 28000 : 16000);
@@ -1589,18 +1679,19 @@
             if (hasStarted) return;
             hasStarted = true;
             usingLiteMode = true;
-            appSplash.classList.add('is-hidden');
+            hideSplash();
             videoHero.classList.add('is-playing', 'is-lite');
             enablePageScroll();
             revealInvitation();
             hideVideoLoading();
-            setTimeout(showScrollHint, 400);
+            showScrollHint();
+            setTimeout(nudgeScrollDown, 120);
         }
 
         function startFullInvitation() {
             if (hasStarted) return;
             hasStarted = true;
-            appSplash.classList.add('is-hidden');
+            hideSplash();
             videoHero.classList.add('is-playing');
             enablePageScroll();
             attachVideoSource();
@@ -1617,6 +1708,7 @@
         }
 
         function startInvitation() {
+            if (hasStarted) return;
             if (shouldUseLiteMode()) {
                 startLiteInvitation();
             } else {
@@ -1632,6 +1724,7 @@
             });
         }
 
+        appSplash.addEventListener('pointerup', startInvitation);
         appSplash.addEventListener('click', startInvitation);
         appSplash.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
