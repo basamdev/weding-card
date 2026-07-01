@@ -116,17 +116,19 @@
         pointer-events: none;
     }
 
-    /* Video block — full screen while playing */
+    /* Video block — collapsed until open */
     .video-hero {
         position: relative;
         width: 100%;
-        height: 100dvh;
-        height: 100svh;
-        min-height: 100dvh;
-        min-height: 100svh;
+        height: 0;
+        min-height: 0;
         background-color: #eceff1;
         overflow: hidden;
         touch-action: pan-y;
+    }
+
+    .video-hero.is-playing {
+        overflow: hidden;
     }
 
     .video-hero.is-lite #invitationText {
@@ -151,14 +153,18 @@
 
     .video-hero.is-lite {
         height: auto;
-        min-height: min(72svh, 620px);
+        min-height: min(58svh, 520px);
         max-height: none;
-        pointer-events: auto;
+        pointer-events: none;
         touch-action: pan-y;
         background: linear-gradient(145deg, #f5f0e8 0%, #f5f0e8 38%, #1b5282 38%, #0f2537 100%);
     }
 
     .video-hero.is-lite.is-playing {
+        pointer-events: none;
+    }
+
+    .video-hero.is-lite .play-video-btn {
         pointer-events: auto;
     }
 
@@ -1244,7 +1250,7 @@
         <video id="invitationVideo" playsinline webkit-playsinline="true" preload="none" muted
             controlsList="nodownload nofullscreen noremoteplayback" disablepictureinpicture disableremoteplayback
             oncontextmenu="return false;">
-            <source data-src="tt.webm" type="video/webm">
+            <source data-src="tt.webm" data-src-mobile="tt-mobile.webm" type="video/webm">
             Your browser does not support the video tag.
         </video>
 
@@ -1393,11 +1399,19 @@
         }
 
         function isMobileDevice() {
+            const ua = navigator.userAgent || '';
+            if (/Android|iPhone|iPad|iPod|Mobile|Telegram/i.test(ua)) return true;
+            if ('ontouchstart' in window && window.innerWidth < 1024) return true;
             return window.matchMedia('(max-width: 900px)').matches;
+        }
+
+        function isInAppBrowser() {
+            return /Telegram|FBAN|FBAV|Instagram|Line\//i.test(navigator.userAgent || '');
         }
 
         function isSlowConnection() {
             const conn = getConnection();
+            if (isInAppBrowser()) return true;
             if (!conn) return isMobileDevice();
             if (conn.saveData) return true;
             if (['slow-2g', '2g', '3g'].includes(conn.effectiveType)) return true;
@@ -1408,13 +1422,8 @@
         }
 
         function shouldUseLiteMode() {
-            if (!isMobileDevice()) return false;
-            const conn = getConnection();
-            if (!conn) return true;
-            if (conn.type === 'wifi' || conn.type === 'ethernet') {
-                return conn.downlink > 0 && conn.downlink < 2.5;
-            }
-            return true;
+            if (isInAppBrowser()) return true;
+            return isMobileDevice();
         }
 
         function createFlowerRain() {
@@ -1547,13 +1556,17 @@
             document.body.style.overflowY = 'scroll';
             document.body.style.touchAction = 'pan-y';
             document.documentElement.style.touchAction = 'pan-y';
-            requestAnimationFrame(() => window.scrollTo(0, 0));
+            requestAnimationFrame(() => {
+                window.scrollTo(0, 0);
+                setTimeout(() => window.scrollTo(0, 1), 80);
+            });
         }
 
         function attachVideoSource() {
-            if (videoSource && videoSource.dataset.src && !videoSource.getAttribute('src')) {
-                videoSource.src = videoSource.dataset.src;
-            }
+            if (!videoSource || !videoSource.dataset.src) return;
+            if (videoSource.getAttribute('src')) return;
+            const mobileSrc = videoSource.dataset.srcMobile;
+            videoSource.src = (isMobileDevice() && mobileSrc) ? mobileSrc : videoSource.dataset.src;
         }
 
         function startFullVideo() {
@@ -1581,6 +1594,7 @@
             enablePageScroll();
             revealInvitation();
             hideVideoLoading();
+            setTimeout(showScrollHint, 400);
         }
 
         function startFullInvitation() {
