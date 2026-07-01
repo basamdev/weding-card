@@ -240,7 +240,7 @@
         align-items: center;
         justify-content: center;
         gap: 14px;
-        background: rgba(236, 239, 241, 0.92);
+        background: rgba(236, 239, 241, 0.97);
         color: var(--name-deep-blue);
         font-size: clamp(15px, 4vw, 18px);
         pointer-events: none;
@@ -1170,7 +1170,7 @@
     </div>
 
     <div id="videoHero" class="video-hero" oncontextmenu="return false;">
-        <video id="invitationVideo" playsinline webkit-playsinline="true" preload="none" poster="og-invite-cover.png" muted
+        <video id="invitationVideo" playsinline webkit-playsinline="true" preload="none" muted
             controlsList="nodownload nofullscreen noremoteplayback" disablepictureinpicture disableremoteplayback
             oncontextmenu="return false;">
             <source src="tt.webm" type="video/webm">
@@ -1179,7 +1179,7 @@
 
         <div id="videoLoading" class="video-loading" aria-live="polite" aria-hidden="true">
             <div class="video-loading-spinner" aria-hidden="true"></div>
-            <span>چاوەڕوان بە...</span>
+            <span>ڤیدیۆ دادەگیرێت...</span>
         </div>
 
         <div id="invitationText">
@@ -1378,6 +1378,7 @@
         let isRevealed = false;
         let effectsStarted = false;
         let loadFallbackTimer = null;
+        let loadingMaxTimer = null;
 
         video.addEventListener('contextmenu', e => e.preventDefault());
         video.addEventListener('dragstart', e => e.preventDefault());
@@ -1386,14 +1387,6 @@
             img.addEventListener('contextmenu', e => e.preventDefault());
             img.addEventListener('dragstart', e => e.preventDefault());
         });
-
-        const forceFramePaint = () => {
-            try {
-                video.currentTime = 0.001;
-            } catch (e) {}
-        };
-
-        video.addEventListener('loadeddata', forceFramePaint);
 
         function showScrollHint() {
             const hint = document.getElementById('scrollDownHint');
@@ -1429,6 +1422,10 @@
                 clearTimeout(loadFallbackTimer);
                 loadFallbackTimer = null;
             }
+            if (loadingMaxTimer) {
+                clearTimeout(loadingMaxTimer);
+                loadingMaxTimer = null;
+            }
         }
 
         function showVideoLoading() {
@@ -1439,7 +1436,6 @@
         }
 
         function startMediaPlayback() {
-            hideVideoLoading();
             video.play().catch(e => console.log("Video play blocked:", e));
             bgMusic.load();
             bgMusic.play().catch(e => console.log("Audio play blocked by browser:", e));
@@ -1451,6 +1447,7 @@
             document.body.style.overflowY = 'scroll';
             document.body.style.touchAction = 'pan-y';
             document.documentElement.style.touchAction = 'pan-y';
+            requestAnimationFrame(() => window.scrollTo(0, 0));
         }
 
         function startInvitation() {
@@ -1459,8 +1456,9 @@
             appSplash.classList.add('is-hidden');
             videoHero.classList.add('is-playing');
             enablePageScroll();
-            showScrollHint();
             showVideoLoading();
+
+            loadingMaxTimer = setTimeout(hideVideoLoading, isSlowConnection() ? 28000 : 16000);
 
             video.load();
 
@@ -1484,11 +1482,19 @@
             if (window.scrollY > 40) hideScrollHint();
         }, { passive: true });
 
+        video.addEventListener('playing', () => {
+            if (video.currentTime > 0.05) hideVideoLoading();
+        });
+
+        video.addEventListener('waiting', () => {
+            if (hasStarted && !video.ended) showVideoLoading();
+        });
+
         video.addEventListener('timeupdate', () => {
-            const nearEnd = !isNaN(video.duration) && video.duration - video.currentTime <= 4;
-            if (video.currentTime >= 2.5 || nearEnd) {
+            if (!isNaN(video.duration) && video.duration - video.currentTime <= 4) {
                 revealInvitation();
             }
+            if (video.currentTime > 0.05) hideVideoLoading();
         });
 
         video.addEventListener('ended', () => {
